@@ -10,7 +10,6 @@ interface GamePlayerProps {
 const GamePlayer: React.FC<GamePlayerProps> = ({ game, onBack }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Generate a blob URL for custom HTML games to bypass sandbox/origin issues
   const effectiveUrl = useMemo(() => {
     if (game.htmlCode) {
       const blob = new Blob([game.htmlCode], { type: 'text/html' });
@@ -33,7 +32,6 @@ const GamePlayer: React.FC<GamePlayerProps> = ({ game, onBack }) => {
   const openInNewTab = () => {
     const win = window.open('about:blank', '_blank');
     if (win) {
-      // For custom HTML, we need the raw code; for URLs, we need absolute paths
       let src = effectiveUrl;
       if (!game.htmlCode && !effectiveUrl.startsWith('http') && !effectiveUrl.startsWith('blob:')) {
         src = new URL(effectiveUrl, window.location.href).href;
@@ -74,7 +72,7 @@ const GamePlayer: React.FC<GamePlayerProps> = ({ game, onBack }) => {
           className="flex items-center gap-2 text-slate-400 hover:text-white font-bold text-sm transition-all group px-4 py-2"
         >
           <svg className="group-hover:-translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          BACK TO HUB
+          BACK TO HOME
         </button>
         <div className="flex gap-2">
            {!game.isCustom && (

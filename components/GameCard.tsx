@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Game } from '../types';
+import { Game } from '../types.ts';
 
 interface GameCardProps {
   game: Game;
@@ -13,16 +13,16 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, onDelete, index }) =
   return (
     <div 
       onClick={onClick}
-      style={{ animationDelay: `${index * 0.1}s` }}
-      className="bg-slate-900/80 rounded-[2rem] overflow-hidden border-2 border-slate-800 hover:border-blue-500 hover:-translate-y-3 transition-all duration-300 flex flex-col group cursor-pointer shadow-xl animate-in fade-in slide-in-from-bottom-8 relative"
+      style={{ animationDelay: `${index * 0.05}s` }}
+      className="bg-slate-900/80 rounded-[2rem] overflow-hidden border-2 border-slate-800 hover:border-blue-500 hover:-translate-y-2 transition-all duration-300 flex flex-col group cursor-pointer shadow-xl animate-in fade-in slide-in-from-bottom-4 relative"
     >
       {game.isCustom && onDelete && (
         <button 
           onClick={onDelete}
-          className="absolute top-2 right-2 z-20 bg-red-500/20 hover:bg-red-500 text-red-500 hover:text-white p-2 rounded-xl border border-red-500/40 transition-all opacity-0 group-hover:opacity-100"
+          className="absolute top-3 right-3 z-20 bg-red-500/20 hover:bg-red-500 text-red-500 hover:text-white p-2 rounded-xl border border-red-500/40 transition-all opacity-0 group-hover:opacity-100"
           title="Delete custom game"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
         </button>
       )}
 
@@ -31,6 +31,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, onDelete, index }) =
           <img 
             src={game.thumbnail} 
             alt={game.title} 
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
@@ -47,16 +48,16 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, onDelete, index }) =
 
         <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <div className="bg-white text-black p-3 rounded-full shadow-2xl scale-50 group-hover:scale-100 transition-transform duration-300">
-               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             </div>
         </div>
       </div>
 
       <div className="p-6">
-        <h3 className="text-2xl font-black mb-2 text-white group-hover:text-blue-400 transition-colors uppercase font-bungee">
+        <h3 className="text-xl font-black mb-2 text-white group-hover:text-blue-400 transition-colors uppercase font-bungee">
           {game.title}
         </h3>
-        <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed font-medium">
+        <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed font-medium">
           {game.description}
         </p>
       </div>
