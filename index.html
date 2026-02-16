@@ -33,11 +33,8 @@
             inset: 0;
             z-index: -1;
         }
-        #root {
-            min-height: 100vh;
-        }
+        #root { min-height: 100vh; }
     </style>
-    <!-- Import Map for React 19 Dependencies -->
     <script type="importmap">
 {
   "imports": {
@@ -55,11 +52,10 @@
     <div class="dot-pattern"></div>
     <div id="root"></div>
 
-    <!-- This specialized script handles the .tsx compilation directly in the browser -->
-    <script type="module">
-        import { run } from "https://esm.sh/run";
-        run();
-    </script>
+    <!-- Correct way to load the esm.sh runner for TSX -->
+    <script type="module" src="https://esm.sh/run"></script>
+    
+    <!-- This script is picked up and transformed by the esm.sh runner -->
     <script type="text/tsx" src="./index.tsx"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { Game, Page } from './types';
-import Navbar from './components/Navbar';
-import GameGrid from './components/GameGrid';
-import AboutPage from './components/AboutPage';
-import GamePlayer from './components/GamePlayer';
+import { Game, Page } from './types.ts';
+import Navbar from './components/Navbar.tsx';
+import GameGrid from './components/GameGrid.tsx';
+import AboutPage from './components/AboutPage.tsx';
+import GamePlayer from './components/GamePlayer.tsx';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -42,7 +42,6 @@ const App: React.FC = () => {
     } catch (error) {
       console.error("Failed to load games:", error);
     } finally {
-      // Small delay to prevent flickering on fast connections
       setTimeout(() => setLoading(false), 300);
     }
   };

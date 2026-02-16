@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Game } from '../types';
-import GameCard from './GameCard';
+import { Game } from '../types.ts';
+import GameCard from './GameCard.tsx';
 
 interface GameGridProps {
   games: Game[];
