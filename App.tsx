@@ -93,13 +93,13 @@ const App: React.FC = () => {
         const imported = JSON.parse(event.target?.result as string);
         if (Array.isArray(imported)) {
           const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
-          // Merge and avoid exact duplicates by ID
           const existingIds = new Set(currentCustom.map((g: any) => g.id));
           const newOnes = imported.filter((g: any) => !existingIds.has(g.id));
           
           localStorage.setItem('custom_games_v1', JSON.stringify([...currentCustom, ...newOnes]));
           loadAllGames();
           alert(`${newOnes.length} games restored successfully!`);
+          setIsModalOpen(false);
         }
       } catch (err) {
         alert("Failed to read backup file. Make sure it's a valid JSON.");
@@ -143,7 +143,7 @@ const App: React.FC = () => {
                 <button 
                   onClick={() => { setModalTab('backup'); setIsModalOpen(true); }}
                   className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-black px-4 py-3 rounded-xl transition-all active:scale-95"
-                  title="Cloud Sync"
+                  title="Backup Settings"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline></svg>
                 </button>
@@ -201,7 +201,7 @@ const App: React.FC = () => {
                   onClick={() => setModalTab('backup')}
                   className={`text-sm font-black font-bungee uppercase tracking-tighter transition-colors ${modalTab === 'backup' ? 'text-white' : 'text-slate-600'}`}
                 >
-                  Sync
+                  Backup
                 </button>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-500 hover:text-white">
@@ -236,14 +236,14 @@ const App: React.FC = () => {
                       placeholder={newGame.type === 'url' ? 'https://...' : '<html>...'}
                     />
                   </div>
-                  <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all font-bungee uppercase">Launch</button>
+                  <button type="submit" className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all font-bungee uppercase">Launch Game</button>
                 </form>
               ) : (
                 <div className="space-y-6">
                   <div className="bg-black/40 p-5 rounded-2xl border border-white/5">
-                    <p className="text-slate-400 text-xs mb-4">Transfer or secure your game collection.</p>
+                    <p className="text-slate-400 text-xs mb-6 text-center">Manage your home data and custom games.</p>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-3">
                       <button 
                         onClick={() => {
                           const customOnly = games.filter(g => g.isCustom);
@@ -252,19 +252,19 @@ const App: React.FC = () => {
                           const url = URL.createObjectURL(blob);
                           const a = document.createElement('a');
                           a.href = url;
-                          a.download = 'collection-backup.json';
+                          a.download = 'home-backup.json';
                           a.click();
                         }} 
-                        className="bg-slate-800 hover:bg-slate-700 py-4 rounded-xl text-white font-black text-xs uppercase tracking-widest border border-white/5 transition-all active:scale-95"
+                        className="w-full bg-slate-800 hover:bg-slate-700 py-4 rounded-xl text-white font-black text-xs uppercase tracking-widest border border-white/5 transition-all active:scale-95"
                       >
-                        Download
+                        Download Backup
                       </button>
                       
                       <button 
                         onClick={() => fileInputRef.current?.click()}
-                        className="bg-blue-600 hover:bg-blue-500 py-4 rounded-xl text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 transition-all active:scale-95"
+                        className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl text-white font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 transition-all active:scale-95"
                       >
-                        Restore
+                        Restore Backup
                       </button>
                     </div>
                     

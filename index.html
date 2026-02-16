@@ -77,14 +77,26 @@
     <div id="boot-loader">
         <div class="loading-spinner mb-6"></div>
         <h1 class="font-bungee text-4xl text-blue-500 mb-2 tracking-tighter neon-glow">ALGEBRA PRACTISE</h1>
-        <p id="boot-status" class="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading Game Modules...</p>
+        <p id="boot-status" class="text-slate-500 font-bold uppercase tracking-widest text-xs">Initializing...</p>
     </div>
 
     <div class="game-bg"></div>
     <div class="dot-pattern"></div>
     <div id="root"></div>
 
-    <!-- This script handles the TSX transformation automatically -->
+    <script type="module">
+        // Emergency fail-safe to remove loader if React fails to mount within 5 seconds
+        setTimeout(() => {
+            const loader = document.getElementById('boot-loader');
+            if (loader && !loader.classList.contains('ready')) {
+                console.warn('Boot loader fail-safe triggered');
+                loader.classList.add('ready');
+                setTimeout(() => loader.remove(), 500);
+                document.body.style.overflow = 'auto';
+            }
+        }, 5000);
+    </script>
+
     <script type="module" src="https://esm.sh/run"></script>
     <script type="text/tsx" src="./index.tsx"></script>
 </body>
