@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Game, Page } from './types.ts';
 import Navbar from './components/Navbar.tsx';
@@ -34,17 +33,23 @@ const App: React.FC = () => {
       
       const saved = localStorage.getItem('custom_games_v1');
       if (saved) {
-        const customGames = JSON.parse(saved);
-        const customIds = new Set(customGames.map((g: Game) => g.id));
-        const filteredInitial = initialGames.filter(g => !customIds.has(g.id));
-        setGames([...filteredInitial, ...customGames]);
+        try {
+          const customGames = JSON.parse(saved);
+          const customIds = new Set(customGames.map((g: Game) => g.id));
+          const filteredInitial = initialGames.filter(g => !customIds.has(g.id));
+          setGames([...filteredInitial, ...customGames]);
+        } catch (e) {
+          console.error("Local storage corrupt, resetting...");
+          setGames(initialGames);
+        }
       } else {
         setGames(initialGames);
       }
     } catch (error) {
       console.error("Failed to load games:", error);
     } finally {
-      setTimeout(() => setLoading(false), 300);
+      // Small timeout to ensure the UI doesn't flicker too fast
+      setTimeout(() => setLoading(false), 200);
     }
   };
 
@@ -106,6 +111,8 @@ const App: React.FC = () => {
       }
     };
     reader.readAsText(file);
+    // Reset file input value so same file can be selected again
+    e.target.value = '';
   };
 
   const filteredGames = games.filter(g => 
@@ -125,7 +132,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative z-10">
       <Navbar onNavigate={(p) => { setCurrentPage(p); setSelectedGame(null); }} currentPage={currentPage} />
       
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -241,7 +248,7 @@ const App: React.FC = () => {
               ) : (
                 <div className="space-y-6">
                   <div className="bg-black/40 p-5 rounded-2xl border border-white/5">
-                    <p className="text-slate-400 text-xs mb-6 text-center">Manage your home data and custom games.</p>
+                    <p className="text-slate-400 text-xs mb-6 text-center">Manage your local data and custom games.</p>
                     
                     <div className="flex flex-col gap-3">
                       <button 
@@ -252,7 +259,7 @@ const App: React.FC = () => {
                           const url = URL.createObjectURL(blob);
                           const a = document.createElement('a');
                           a.href = url;
-                          a.download = 'home-backup.json';
+                          a.download = 'algebra-practise-backup.json';
                           a.click();
                         }} 
                         className="w-full bg-slate-800 hover:bg-slate-700 py-4 rounded-xl text-white font-black text-xs uppercase tracking-widest border border-white/5 transition-all active:scale-95"
