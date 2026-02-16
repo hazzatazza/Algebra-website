@@ -1,0 +1,8 @@
+{
+  "name": "Algebra Practise",
+  "description": "A sleek, modern game hub designed for fun and discovery, featuring a discreet interface and advanced viewing options.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

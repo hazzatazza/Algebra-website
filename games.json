@@ -1,0 +1,42 @@
+[
+  {
+    "id": "poly-track",
+    "title": "Poly Track",
+    "description": "A low-poly racing game where speed is everything. Master the tracks, set new records, and experience pure arcade racing bliss.",
+    "iframeUrl": "https://polytrack-3.pages.dev/",
+    "thumbnail": "https://dashmetry.com/cache/data/image/game/polytrack/polytrack-m546x307.webp",
+    "category": "Racing"
+  },
+  {
+    "id": "short-life",
+    "title": "Short Life",
+    "description": "Survival is the only goal. Dodge traps, spikes, and saws to keep your limbs attached in this physics-based obstacle course.",
+    "iframeUrl": "https://shortlife1.pages.dev/",
+    "thumbnail": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/893570/capsule_616x353.jpg?t=1542188708",
+    "category": "Survival"
+  },
+  {
+    "id": "run-3",
+    "title": "Run 3",
+    "description": "The legendary tunnel runner. Leap through space, rotate your perspective, and keep running as the floor falls away.",
+    "iframeUrl": "https://run3algebra.pages.dev/",
+    "thumbnail": "https://www.coolmathgames.com/sites/default/files/Run3_OG-logo.jpg",
+    "category": "Platformer"
+  },
+  {
+    "id": "cookie-clicker",
+    "title": "Cookie Clicker",
+    "description": "The original idle game where you bake an astronomical amount of cookies.",
+    "iframeUrl": "https://cookieclickeralgebra.pages.dev/",
+    "thumbnail": "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000066299/432bf350e866b2544f9a5cd80de83e0c24f4efddfd7811016c4aa33e48c5df7c",
+    "category": "Idle"
+  },
+  {
+    "id": "custom-1771238810965",
+    "title": "Flappy Bird",
+    "description": "The classic challenge, now permanently embedded directly in the Algebra Practise hub.",
+    "iframeUrl": "https://s3-eu-west-1.amazonaws.com/apps.playcanvas.com/a15aec72/index.html",
+    "thumbnail": "https://archive.org/download/com.dotgears.flappybird/icon.jpg",
+    "category": "Arcade"
+  }
+]
