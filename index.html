@@ -77,7 +77,7 @@
     <div id="boot-loader">
         <div class="loading-spinner mb-6"></div>
         <h1 class="font-bungee text-4xl text-blue-500 mb-2 tracking-tighter neon-glow">ALGEBRA PRACTISE</h1>
-        <p id="boot-status" class="text-slate-500 font-bold uppercase tracking-widest text-xs">Initializing...</p>
+        <p id="boot-status" class="text-slate-500 font-bold uppercase tracking-widest text-xs">Calibrating Hub...</p>
     </div>
 
     <div class="game-bg"></div>
@@ -88,25 +88,24 @@
     <script type="text/tsx" src="./index.tsx"></script>
 
     <script>
-        // Global error handler for debugging
+        // Emergency fail-safe: Force-remove loader after 5 seconds
+        // This ensures the site is usable even if index.tsx fails to fire its cleanup
+        setTimeout(function() {
+            var loader = document.getElementById('boot-loader');
+            if (loader && !loader.classList.contains('ready')) {
+                console.warn("React initialization took too long. Forcing access.");
+                loader.classList.add('ready');
+                document.body.style.overflow = 'auto';
+            }
+        }, 5000);
+
+        // Simple error handler to help debugging
         window.onerror = function(msg, url, line) {
-            console.error("Boot Error: " + msg + "\nat " + url + ":" + line);
+            console.error("Boot Error: " + msg + " at " + line);
             var status = document.getElementById('boot-status');
-            if (status) status.textContent = "Error: System failed to start.";
+            if (status) status.textContent = "Error: Sequence interrupted.";
             return false;
         };
-
-        // Fail-safe to remove loader if mount takes too long
-        (function() {
-            setTimeout(function() {
-                var loader = document.getElementById('boot-loader');
-                if (loader && !loader.classList.contains('ready')) {
-                    console.warn("React initialization timeout reached. Forcing interface display.");
-                    loader.classList.add('ready');
-                    document.body.style.overflow = 'auto';
-                }
-            }, 6000);
-        })();
     </script>
 </body>
 </html>
