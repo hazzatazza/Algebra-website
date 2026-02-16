@@ -1,6 +1,5 @@
-
 import React, { useRef, useMemo } from 'react';
-import { Game } from '../types';
+import { Game } from '../types.ts';
 
 interface GamePlayerProps {
   game: Game;

@@ -25,7 +25,14 @@ const App: React.FC = () => {
   const loadAllGames = async () => {
     try {
       setLoading(true);
-      const response = await fetch('./games.json');
+      
+      // Add a 5-second timeout to the fetch to prevent permanent loading if the server hangs
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('./games.json', { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
       let initialGames: Game[] = [];
       if (response.ok) {
         initialGames = await response.json();
@@ -35,20 +42,33 @@ const App: React.FC = () => {
       if (saved) {
         try {
           const customGames = JSON.parse(saved);
-          const customIds = new Set(customGames.map((g: Game) => g.id));
-          const filteredInitial = initialGames.filter(g => !customIds.has(g.id));
-          setGames([...filteredInitial, ...customGames]);
+          if (Array.isArray(customGames)) {
+            const customIds = new Set(customGames.map((g: Game) => g.id));
+            const filteredInitial = initialGames.filter(g => !customIds.has(g.id));
+            setGames([...filteredInitial, ...customGames]);
+          } else {
+            setGames(initialGames);
+          }
         } catch (e) {
-          console.error("Local storage corrupt, resetting...");
+          console.error("Local storage corrupt, resetting to defaults.");
           setGames(initialGames);
         }
       } else {
         setGames(initialGames);
       }
     } catch (error) {
-      console.error("Failed to load games:", error);
+      console.error("Failed to load games database:", error);
+      // Fallback: If fetch fails, we at least try to show local custom games
+      const saved = localStorage.getItem('custom_games_v1');
+      if (saved) {
+        try {
+          setGames(JSON.parse(saved));
+        } catch {
+          setGames([]);
+        }
+      }
     } finally {
-      // Small timeout to ensure the UI doesn't flicker too fast
+      // Small timeout to ensure visual consistency
       setTimeout(() => setLoading(false), 200);
     }
   };
@@ -71,21 +91,29 @@ const App: React.FC = () => {
       category: 'Custom'
     };
 
-    const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
-    const updatedCustomGames = [...currentCustom, customGame];
-    localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustomGames));
+    try {
+      const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
+      const updatedCustomGames = [...currentCustom, customGame];
+      localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustomGames));
+      loadAllGames();
+    } catch (err) {
+      console.error("Failed to save custom game:", err);
+    }
     
-    loadAllGames();
     setIsModalOpen(false);
     setNewGame({ title: '', description: '', type: 'url', content: '' });
   };
 
   const handleDeleteGame = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
-    const updatedCustom = currentCustom.filter((g: Game) => g.id !== id);
-    localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustom));
-    loadAllGames();
+    try {
+      const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
+      const updatedCustom = currentCustom.filter((g: Game) => g.id !== id);
+      localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustom));
+      loadAllGames();
+    } catch (err) {
+      console.error("Failed to delete game:", err);
+    }
   };
 
   const handleRestore = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +139,6 @@ const App: React.FC = () => {
       }
     };
     reader.readAsText(file);
-    // Reset file input value so same file can be selected again
     e.target.value = '';
   };
 

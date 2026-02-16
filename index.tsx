@@ -1,37 +1,50 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
-console.log('Index.tsx starting...');
+/**
+ * Algebra Practise - Entry Point
+ * Handles the initial mount and transitions the UI from the loader to the app.
+ */
 
-const container = document.getElementById('root');
-const statusText = document.getElementById('boot-status');
-const bootLoader = document.getElementById('boot-loader');
+const boot = () => {
+  const container = document.getElementById('root');
+  const bootLoader = document.getElementById('boot-loader');
+  const statusText = document.getElementById('boot-status');
 
-if (container) {
+  if (!container) {
+    console.error('Fatal: Root container not found.');
+    return;
+  }
+
   try {
-    if (statusText) statusText.textContent = 'Mounting Application...';
-    
+    if (statusText) statusText.textContent = 'Mounting Interface...';
+
     const root = ReactDOM.createRoot(container);
     root.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>
     );
-    
-    // Remove the boot loader once React has taken over
-    // We use a small delay to allow the first paint to complete
+
+    // Hide the loader once React has had a moment to begin rendering
     setTimeout(() => {
       if (bootLoader) {
         bootLoader.classList.add('ready');
-        setTimeout(() => bootLoader.remove(), 500);
+        document.body.style.overflow = 'auto';
+        
+        // Fully remove from DOM after transition for performance
+        setTimeout(() => {
+          if (bootLoader.parentNode) bootLoader.remove();
+        }, 1000);
       }
-      document.body.style.overflow = 'auto';
-    }, 800);
+    }, 500);
 
   } catch (error) {
-    console.error('Mounting failed:', error);
-    if (statusText) statusText.textContent = 'Error: Failed to mount app.';
+    console.error('Mount Error:', error);
+    if (statusText) statusText.textContent = 'Hardware Error: Failed to start.';
   }
-}
+};
+
+// Start the application
+boot();
