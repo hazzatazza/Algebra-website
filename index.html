@@ -33,13 +33,24 @@
             inset: 0;
             z-index: -1;
         }
+        
+        /* Smooth fade-in for the root element once React mounts */
+        #root:empty {
+            opacity: 0;
+        }
+        #root {
+            opacity: 1;
+            transition: opacity 0.5s ease-in;
+        }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
@@ -48,5 +59,6 @@
     <div class="game-bg"></div>
     <div class="dot-pattern"></div>
     <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

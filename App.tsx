@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Game, Page } from './types';
 import Navbar from './components/Navbar';
@@ -22,6 +23,7 @@ const App: React.FC = () => {
 
   const loadAllGames = async () => {
     try {
+      setLoading(true);
       const response = await fetch('./games.json');
       let initialGames: Game[] = [];
       if (response.ok) {
@@ -31,7 +33,6 @@ const App: React.FC = () => {
       const saved = localStorage.getItem('custom_games_v1');
       if (saved) {
         const customGames = JSON.parse(saved);
-        // Deduplicate or prioritize custom ones if IDs match (they shouldn't normally)
         const customIds = new Set(customGames.map((g: Game) => g.id));
         const filteredInitial = initialGames.filter(g => !customIds.has(g.id));
         setGames([...filteredInitial, ...customGames]);
@@ -41,7 +42,8 @@ const App: React.FC = () => {
     } catch (error) {
       console.error("Failed to load games:", error);
     } finally {
-      setLoading(false);
+      // Small delay to prevent flickering on fast connections
+      setTimeout(() => setLoading(false), 300);
     }
   };
 
@@ -63,19 +65,19 @@ const App: React.FC = () => {
       category: 'Custom'
     };
 
-    const updatedCustomGames = [...games.filter(g => g.isCustom), customGame];
+    const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
+    const updatedCustomGames = [...currentCustom, customGame];
     localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustomGames));
     
-    // Refresh the list from the combined sources
     loadAllGames();
-    
     setIsModalOpen(false);
     setNewGame({ title: '', description: '', type: 'url', content: '' });
   };
 
   const handleDeleteGame = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const updatedCustom = games.filter(g => g.isCustom && g.id !== id);
+    const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
+    const updatedCustom = currentCustom.filter((g: Game) => g.id !== id);
     localStorage.setItem('custom_games_v1', JSON.stringify(updatedCustom));
     loadAllGames();
   };
@@ -85,10 +87,9 @@ const App: React.FC = () => {
     const dataStr = JSON.stringify(customOnly, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = 'algebra-practise-backup.json';
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.setAttribute('download', 'algebra-practise-backup.json');
     linkElement.click();
   };
 
@@ -102,7 +103,6 @@ const App: React.FC = () => {
         const imported = JSON.parse(event.target?.result as string);
         if (Array.isArray(imported)) {
           const currentCustom = JSON.parse(localStorage.getItem('custom_games_v1') || '[]');
-          // Merge and avoid duplicates by ID
           const merged = [...currentCustom];
           const currentIds = new Set(merged.map(g => g.id));
           
@@ -167,9 +167,9 @@ const App: React.FC = () => {
             </div>
             
             {loading ? (
-              <div className="flex justify-center items-center h-64">
+              <div className="flex justify-center items-center h-64 gap-4">
                 <div className="animate-bounce h-8 w-8 bg-blue-500 rounded-full"></div>
-                <div className="animate-bounce h-8 w-8 bg-purple-500 rounded-full mx-4" style={{ animationDelay: '0.1s' }}></div>
+                <div className="animate-bounce h-8 w-8 bg-purple-500 rounded-full" style={{ animationDelay: '0.1s' }}></div>
                 <div className="animate-bounce h-8 w-8 bg-pink-500 rounded-full" style={{ animationDelay: '0.2s' }}></div>
               </div>
             ) : (
